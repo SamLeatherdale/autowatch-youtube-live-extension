@@ -1,8 +1,9 @@
 const path = require('path');
 
+const DotenvPlugin = require('dotenv-webpack');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 module.exports = {
   entry: {
@@ -14,14 +15,14 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        use: 'ts-loader',
+        test: /\.(js|ts)x?$/,
+        use: ['babel-loader'],
         exclude: /node_modules/,
       },
       {
         test: /\.(scss|css)$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
-      }
+      },
     ],
   },
   resolve: {
@@ -33,14 +34,16 @@ module.exports = {
     clean: true,
   },
   plugins: [
-    new RemoveEmptyScriptsPlugin(),
+    new DotenvPlugin(),
+    new ESLintPlugin({
+      extensions: ['js', 'ts'],
+      overrideConfigFile: path.resolve(__dirname, '.eslintrc'),
+    }),
     new MiniCssExtractPlugin({
       filename: 'styles/[name].css',
     }),
     new CopyPlugin({
-      patterns: [
-        { from: 'static' },
-      ],
+      patterns: [{ from: 'static' }],
     }),
   ],
 };
