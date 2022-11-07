@@ -10,3 +10,16 @@
   align-items: center;
   justify-content: center;
 }
+
+form {
+  div {
+    display: flex;
+    text-align: start;
+  }
+  label {
+    width: 150px;
+  }
+  input[type=text] {
+    width: 200px;
+  }
+}

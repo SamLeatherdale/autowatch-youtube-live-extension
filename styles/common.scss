@@ -1,8 +1,10 @@
 @import 'normalize.css';
+@import 'slider.scss';
 
 body {
   background-color: #292d3e;
   color: #ffffff;
+  padding: 8px;
 }
 
 .input-group {

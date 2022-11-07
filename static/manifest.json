@@ -1,6 +1,6 @@
 {
-  "name": "chrome-extension-webpack",
-  "description": "My basic Chrome extension",
+  "name": "autowatch-youtube-live",
+  "description": "Automatically watch your favourite streams on YouTube.",
   "version": "0.1.0",
   "manifest_version": 3,
   "background": {
@@ -8,7 +8,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["https://*.youtube.com/*"],
       "js": ["contentScript.js"]
     }
   ],
@@ -18,7 +18,7 @@
     "open_in_tab": true
   },
   "action": {
-    "default_title": "My basic Chrome extension",
+    "default_title": "Autowatch YouTube Live",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "/icons/16x.png",
