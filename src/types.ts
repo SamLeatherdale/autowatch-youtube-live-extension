@@ -9,6 +9,7 @@ export type CheckStatusResult = {
   isStreamWaiting: boolean;
   isStreamRewards: boolean;
   isVideoIdMismatch: boolean;
+  channelId?: string;
   videoId?: string;
   urlVideoId: string | null;
 };

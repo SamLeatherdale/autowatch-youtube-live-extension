@@ -3,6 +3,7 @@ export type StorageType = {
   start?: boolean;
   channelUrl?: string;
   reloadNoRewards?: boolean;
+  apiKey?: string;
 };
 
 export function getStorageData(): Promise<StorageType> {

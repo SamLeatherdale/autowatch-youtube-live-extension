@@ -1,3 +1,4 @@
+import { getLiveVideos } from './api';
 import { checkStatus, findStreams } from './client';
 import { getStorageData, StorageType } from './storage';
 import { CheckStatusResult, Payload } from './types';
@@ -48,7 +49,24 @@ function start(now: boolean, storage: StorageType) {
 function stop() {
   window.clearInterval(interval);
 }
-
+async function findVideos(
+  status: CheckStatusResult,
+  options: StorageType,
+  scheduled = false,
+): Promise<boolean> {
+  const result = await getLiveVideos(
+    status.channelId,
+    options.apiKey,
+    scheduled,
+  );
+  if (result.items?.[0]?.id) {
+    window.location.assign(`https://youtube.com/watch?v=${result.items[0].id}`);
+    return true;
+  } else if (!scheduled) {
+    return findVideos(status, options, true);
+  }
+  return false;
+}
 async function loop(options: StorageType) {
   const { channelUrl, reloadNoRewards } = options;
   console.log('Running...');
@@ -80,6 +98,12 @@ async function loop(options: StorageType) {
   }
 
   if (status.isChannelPage) {
+    if (status.channelId && options.apiKey) {
+      // if (await findVideos(status, options)) {
+      //   return;
+      // }
+    }
+
     const streams = findStreams();
 
     if (streams?.url) {

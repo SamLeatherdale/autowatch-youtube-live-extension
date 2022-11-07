@@ -84,6 +84,9 @@ export function checkStatus(): CheckStatusResult {
   const videoId = document.querySelector<HTMLMetaElement>(
     'meta[itemprop=videoId]',
   )?.content;
+  const channelId = document.querySelector<HTMLMetaElement>(
+    'meta[itemprop=channelId]',
+  )?.content;
   const urlVideoId = new URLSearchParams(window.location.search).get('v');
   const isLiveStream = document.querySelector<HTMLMetaElement>(
     'meta[itemprop=isLiveBroadcast]',
@@ -119,6 +122,7 @@ export function checkStatus(): CheckStatusResult {
       (!!premierTrailerOverlay &&
         premierTrailerOverlay.style.display !== 'none'),
     isStreamRewards: rewardsButton?.innerText?.toUpperCase() === 'CONNECTED',
+    channelId,
     videoId,
     urlVideoId,
     isVideoIdMismatch: !!videoId && !!urlVideoId && videoId !== urlVideoId,
