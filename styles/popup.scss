@@ -15,11 +15,25 @@
 }
 
 #go-to-options {
+  color: white;
   appearance: none;
   background-color: transparent;
   border: 0;
-  width: 32px;
-  height: 32px;
   position: absolute;
   right: 32px;
+  font-size: 32px;
+}
+#status-section {
+  text-align: center;
+  border: 1px solid white;
+  border-radius: 8px;
+  padding: 8px;
+
+  #status-icon {
+    font-size: 32px;
+  }
+  #status-message {
+    margin: 0;
+    font-size: 18px;
+  }
 }

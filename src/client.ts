@@ -1,18 +1,4 @@
-type FindStreamResult = {
-  isLive: boolean;
-  url?: string;
-};
-
-type CheckStatusResult = {
-  isChannelPage: boolean;
-  loginUrl?: string;
-  isStream: boolean;
-  isStreamWaiting: boolean;
-  isStreamRewards: boolean;
-  isVideoIdMismatch: boolean;
-  videoId?: string;
-  urlVideoId: string | null;
-};
+import { CheckStatusResult, FindStreamResult } from './types';
 
 function getParentLink(el: HTMLElement) {
   return (getParentEl(el, 'a') as HTMLAnchorElement | undefined)?.href;

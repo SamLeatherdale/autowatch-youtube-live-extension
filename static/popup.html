@@ -10,11 +10,10 @@
   </head>
 
   <body>
-    <button
-      id="go-to-options"
-      style="background-image: url('icons/cog.svg')"
-    ></button>
-    <div class="container">
+    <button id="go-to-options">
+      <i class="fa-solid fa-gear"></i>
+    </button>
+    <section class="container">
       <h2>Autowatch YouTube Live 📺</h2>
       <form>
         <label class="switch" for="options-start">
@@ -22,7 +21,12 @@
           <span class="slider round"></span>
         </label>
       </form>
-    </div>
+    </section>
+
+    <section id="status-section">
+      <i id="status-icon" class="fa-solid fa-link-slash"></i>
+      <p id="status-message">Waiting for connection to page...</p>
+    </section>
 
     <script src="popup.js"></script>
   </body>

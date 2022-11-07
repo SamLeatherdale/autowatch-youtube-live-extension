@@ -1,9 +1,11 @@
 import { checkStatus, findStreams } from './client';
 import { getStorageData, StorageType } from './storage';
-import { logColor, logStatusMessage, wait } from './utils';
+import { CheckStatusResult, Payload } from './types';
+import { log, logColor, logError, logStatusMessage, wait } from './utils';
 
 let didTryLogin = true;
 let interval = 0;
+let port: chrome.runtime.Port;
 
 getStorageData().then((storage) => {
   console.log(storage);
@@ -24,6 +26,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
   }
 });
+
+chrome.runtime.onConnect.addListener((connectPort) => {
+  log('Connected to popup');
+  port = connectPort;
+  port.onDisconnect.addListener(() => {
+    log('Disconnected from popup');
+    port = undefined;
+  });
+});
 console.log('Ready for messages');
 
 function start(now: boolean, storage: StorageType) {
@@ -42,6 +53,7 @@ async function loop(options: StorageType) {
   const { channelUrl, reloadNoRewards } = options;
   console.log('Running...');
   const status = checkStatus();
+  sendStatus(status);
 
   if (status.isVideoIdMismatch) {
     logColor(
@@ -64,7 +76,7 @@ async function loop(options: StorageType) {
   }
 
   if (!status.isStream && !status.isChannelPage) {
-    return await goToChannelPage(channelUrl);
+    return goToChannelPage(channelUrl);
   }
 
   if (status.isChannelPage) {
@@ -79,24 +91,53 @@ async function loop(options: StorageType) {
       );
       window.location.assign(streams.url);
     } else {
-      logColor('yellow', `Could not find any streams right now`);
+      const msg = `Waiting for channel to begin streaming...`;
+      logColor('yellow', msg);
+      sendStatus(status, msg, 'fa-circle-notch fa-spin');
       await wait(1000 * 30);
       window.location.reload();
     }
   }
 
   if (status.isStream) {
+    let msg;
     if (status.isStreamWaiting) {
-      logStatusMessage('blue', 'Waiting for stream to begin...');
+      msg = 'Waiting for scheduled stream to begin...';
+      logStatusMessage('blue', msg);
+      sendStatus(status, msg, 'hourglass-start');
     } else if (status.isStreamRewards) {
-      logStatusMessage('green', `Stream has begun and rewards detected`);
+      msg = `Stream has begun and rewards detected`;
+      logStatusMessage('green', msg);
+      sendStatus(status, msg, 'fa-gem');
     } else {
-      logStatusMessage('yellow', `Stream has begun but no rewards detected`);
+      msg = `Stream has begun but no rewards detected`;
+      logStatusMessage('yellow', msg, 'fa-triangle-exclamation');
+      sendStatus(status, msg);
       if (reloadNoRewards) {
         await wait(1000 * 30);
         window.location.reload();
       }
     }
+  }
+}
+
+function sendStatus(
+  status: CheckStatusResult,
+  message?: string,
+  icon?: string,
+) {
+  if (!port) {
+    return;
+  }
+  try {
+    port.postMessage({
+      type: 'status',
+      status,
+      message,
+      icon,
+    } as Payload);
+  } catch (e) {
+    logError(e);
   }
 }
 
