@@ -27,7 +27,7 @@ export function findStreams(): FindStreamResult {
     );
     const sorted = Array.from(scheduled)
       .map((el: HTMLElement) => {
-        const parent = getParentEl(el, 'ytd-rich-item-renderer');
+        const parent = getParentEl(el, 'ytd-grid-video-renderer');
         if (!parent) {
           throw new Error('No video parent');
         }
